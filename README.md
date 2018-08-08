@@ -1,18 +1,12 @@
 # zabbix-mymon
 -------------------------
 ## 介绍
-最近学习使用go语言写了一个zabbix监控mysql数据库的小工具，有如下特点:
-
-1.使用Zabbix Agent Trapper方式(主动发送采集数据到zabbix server，类似active模式)监控mysql数据库
-
-2.支持对密码加密，避免配置文件里出现明文密码
-
-3.支持SHOW /*!50001 GLOBAL */ STATUS和SHOW /*!50001 GLOBAL */ VARIABLES所有指标监控！！！
-    
-4.支持mysql主从监控(默认关闭，可通过配置文件开启，mysql用户需要有SUPER或REPLICATION CLIENT权限)
-
-5.支持自定义采集周期
-
+最近学习使用go语言写了一个zabbix监控mysql数据库的小工具，有如下特点:     
+1.使用Zabbix Agent Trapper方式(主动发送采集数据到zabbix server，类似active模式)监控mysql数据库       
+2.支持对密码加密，避免配置文件里出现明文密码       
+3.支持SHOW /*!50001 GLOBAL */ STATUS和SHOW /*!50001 GLOBAL */ VARIABLES所有指标监控！！！           
+4.支持mysql主从监控(默认关闭，可通过配置文件开启，mysql用户需要有SUPER或REPLICATION CLIENT权限)     
+5.支持自定义采集周期     
 
 模版下载:[https://dl.cactifans.com/zabbix/zabbix_template_mysql.tar.gz](https://dl.cactifans.com/zabbix/zabbix_template_mysql.tar.gz)
 
@@ -77,7 +71,7 @@ sXcEQ2FTGk4WsWSxyT6fuBnjZ3v43pc0
     }
 }
 ```
-配置文件说明
+配置文件说明     
 interval 采集周期，单位为秒          
 slave 是否开启slave采集,如需要采集，mysql用户需要有SUPER或REPLICATION CLIENT权限      
 需要监控的mysql数据库信息配置    
@@ -87,9 +81,9 @@ slave 是否开启slave采集,如需要采集，mysql用户需要有SUPER或REPL
 >port   mysql端口  
 
 zabbix信息配置        
->server 为zabbix server的地址，如通过zabbix proxy 需要设置为zabbix proxy的地址  
->port zabbix server端口默认为10051  
->hostname为之前关联模版的主机名一致  
+>server 为zabbix server的地址，如通过zabbix proxy 需要设置为zabbix proxy的地址
+>port zabbix server端口默认为10051     
+>hostname为之前关联模版的主机名一致    
 
 
 ![4](https://img.cactifans.com/wp-content/uploads/2018/08/4.jpg)
@@ -129,8 +123,7 @@ cd /opt/mymon
 
 ## 扩展
 ### 指标增加
-由于指标较多目前添加了基础的监控指标，SHOW /*!50001 GLOBAL */ STATUS和SHOW /*!50001 GLOBAL */ 命令支持的指标都支持监控！！！
-只需要在模版里添加新的item即可。clone当前的指标,修改就可以了
+由于指标较多目前添加了基础的监控指标，SHOW /*!50001 GLOBAL */ STATUS和SHOW /*!50001 GLOBAL */ 命令支持的指标都支持监控！！！只需要在模版里添加新的item即可。clone当前的指标,修改就可以了       
 ![9](https://img.cactifans.com/wp-content/uploads/2018/08/9.jpg)
 
 指标解释

@@ -22,13 +22,32 @@ package cmd
 
 import (
 	"database/sql"
-	"encoding/base64"
 	"fmt"
 	"github.com/canghai908/zabbix-mymon/utils"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/spf13/cobra"
 	"log"
 )
+
+func Dbcon() (db *sql.DB, err error) {
+	//Aes解密密码
+	dec_password, err := utils.DecPwd(Mysql_password)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	//连接mysql
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/", Mysql_username, dec_password,
+		Mysql_host, Mysql_port) + "?clientFoundRows=false&timeout=5s&charset=utf8&collation=utf8_general_ci"
+	Db, err := sql.Open("mysql", dsn)
+	Db.SetMaxOpenConns(20)
+	Db.SetMaxIdleConns(20)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+	return Db, nil
+}
 
 // pingCmd represents the ping command
 var pingCmd = &cobra.Command{
@@ -39,29 +58,13 @@ var pingCmd = &cobra.Command{
 mymon ping --config=./mymon.json`,
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Println("Using config file:", ConfigFile, " successfully!")
-		//Aes解密密码
-		decodeBytes_password, err := base64.StdEncoding.DecodeString(Mysql_password)
+		Db, err := Dbcon()
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-		dec_password, err := utils.AesDecode([]byte(decodeBytes_password))
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		//连接mysql
-		dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/", Mysql_username, string(dec_password),
-			Mysql_host, Mysql_port) + "?clientFoundRows=false&timeout=5s&charset=utf8&collation=utf8_general_ci"
-		db, err := sql.Open("mysql", dsn)
-		db.SetMaxOpenConns(20)
-		db.SetMaxIdleConns(20)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		defer db.Close()
-		t := db.Ping()
+		defer Db.Close()
+		t := Db.Ping()
 		if t != nil {
 			fmt.Println("0")
 			return

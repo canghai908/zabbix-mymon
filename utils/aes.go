@@ -26,6 +26,7 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"errors"
+	"fmt"
 	"io"
 )
 
@@ -67,4 +68,20 @@ func AesDecode(text []byte) ([]byte, error) {
 		return nil, err
 	}
 	return data, nil
+}
+
+//解密密码
+func DecPwd(password string) (dec_pwd string, err error) {
+
+	decodeBytes_password, err := base64.StdEncoding.DecodeString(password)
+	if err != nil {
+		fmt.Println(err)
+		return "", err
+	}
+	dec_password, err := AesDecode([]byte(decodeBytes_password))
+	if err != nil {
+		fmt.Println(err)
+		return "", err
+	}
+	return string(dec_password), nil
 }

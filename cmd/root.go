@@ -32,7 +32,8 @@ import (
 var (
 	cfgFile         string
 	Debug           bool
-	Step            int
+	Interval        int
+	Slave           bool
 	Mysql_username  string
 	Mysql_password  string
 	Mysql_host      string
@@ -82,7 +83,8 @@ func initConfig() {
 	}
 	ConfigFile = viper.ConfigFileUsed()
 	Debug = viper.GetBool("debug")
-	Step = viper.GetInt("step")
+	Interval = viper.GetInt("interval")
+	Slave = viper.GetBool("slave")
 	Mysql_username = viper.GetString("mysql.username")
 	Mysql_password = viper.GetString("mysql.password")
 	Mysql_host = viper.GetString("mysql.host")

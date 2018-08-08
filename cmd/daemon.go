@@ -22,11 +22,9 @@ package cmd
 
 import (
 	"database/sql"
-	"encoding/base64"
 	"fmt"
 	log "github.com/Sirupsen/logrus"
 	. "github.com/canghai908/go-zabbix"
-	"github.com/canghai908/zabbix-mymon/utils"
 	"github.com/spf13/cobra"
 	"time"
 )
@@ -92,7 +90,7 @@ func SlaveStatus(db *sql.DB, host string) ([]*Metric, error) {
 		fmt.Println(err)
 		return nil, err
 	}
-
+	defer rows.Close()
 	cols, _ := rows.Columns()
 	values := make([]sql.RawBytes, len(cols))
 	scans := make([]interface{}, len(cols))
@@ -151,36 +149,22 @@ var daemonCmd = &cobra.Command{
 mymon deamon --config=./mymon.json`,
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Info("Using config file:", ConfigFile, " successfully!")
-		//Aes解密密码
-		decodeBytes_password, err := base64.StdEncoding.DecodeString(Mysql_password)
+		Db, err := Dbcon()
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-
-		dec_password, err := utils.AesDecode([]byte(decodeBytes_password))
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		//连接mysql
-		dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/", Mysql_username, string(dec_password),
-			Mysql_host, Mysql_port) + "?clientFoundRows=false&timeout=5s&charset=utf8&collation=utf8_general_ci"
-		Db, err := sql.Open("mysql", dsn)
-		Db.SetMaxOpenConns(20)
-		Db.SetMaxIdleConns(20)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
+		defer Db.Close()
 		for {
 			data := make([]*Metric, 0)
-			//slaveStatus
-			met, err := SlaveStatus(Db, Zabbix_hostname)
-			if err != nil {
-				return
+			if Slave {
+				//slaveStatus
+				met, err := SlaveStatus(Db, Zabbix_hostname)
+				if err != nil {
+					return
+				}
+				data = append(data, met...)
 			}
-			data = append(data, met...)
 
 			//globalStatus
 			globalStatus, err := GlobalStatus(Db, Zabbix_hostname)
@@ -200,7 +184,7 @@ mymon deamon --config=./mymon.json`,
 			packet := NewPacket(data)
 			z := NewSender(Zabbix_host, Zabbix_port)
 			z.Send(packet)
-			time.Sleep(time.Duration(Step) * time.Second)
+			time.Sleep(time.Duration(Interval) * time.Second)
 		}
 	},
 }

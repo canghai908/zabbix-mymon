@@ -8,8 +8,8 @@
 2.支持对密码加密，避免配置文件里出现明文密码
 
 3.支持SHOW /*!50001 GLOBAL */ STATUS和SHOW /*!50001 GLOBAL */ VARIABLES所有指标监控！！！
-
-4.支持mysql主从监控
+    
+4.支持mysql主从监控(默认关闭，可通过配置文件开启，mysql用户需要有SUPER或REPLICATION CLIENT权限)
 
 5.支持自定义采集周期
 
@@ -19,17 +19,14 @@
 二进制下载:[https://dl.cactifans.com/zabbix/zabbix-mymon-0.0.1.x86_64.tar.gz](https://dl.cactifans.com/zabbix/zabbix-mymon-0.0.1.x86_64.tar.gz)
 
 ## 源码编译
-如果不喜欢使用二进制包或者需要修改某些源码的，可以使用源码编译，具体步骤如下。
-部署好golang开发环境，具体部署手册请查看 https://golang.org/doc/install
-执行以下命令
+如果不喜欢使用二进制包或者需要修改某些源码的，可以使用源码编译，具体步骤如下。部署好golang开发环境，具体部署手册请查看 https://golang.org/doc/install
+执行以下命令,即可编译生成mymon-0.0.1.tar.gz
 ```
 mkdir -p $GOPATH/src/github.com/canghai908
 cd $GOPATH/src/github.com/canghai90
 git clone https://github.com/canghai908/zabbix-mymon.git
 cd zabbix-mymon &./control pack
 ```
-即可编译生成mymon-0.0.1.tar.gz
-
 
 ## 导入模版
 在zabbix Server上导入导入模版，解压之前下载的模版。
@@ -65,7 +62,8 @@ sXcEQ2FTGk4WsWSxyT6fuBnjZ3v43pc0
 ```
 {
 "debug": false,
-"step": 60, 
+"interval": 60,
+"slave": false, 
 "mysql": {
         "username": "admin",
         "password": "hcxhF+KoURUsge+kMQQaU2lDN1YfOLiJ",
@@ -80,21 +78,28 @@ sXcEQ2FTGk4WsWSxyT6fuBnjZ3v43pc0
 }
 ```
 配置文件说明
-step为采集周期，单位为秒
+interval 采集周期，单位为秒
+slave 是否开启slave采集,如需要采集，mysql用户需要有SUPER或REPLICATION CLIENT权限
 需要监控的mysql数据库信息配置
->username为数据库的用户名，一般使用root用户
->passoword为之前加密的密码密文
->host为数据库主机ip
->port为mysql端口
->
+>username 数据库的用户名，一般使用root用户  
+>passoword 加密后的密码密文  
+>host    数据库主机ip  
+>port   mysql端口  
+
 zabbix信息配置
->server 为zabbix server的地址，如通过zabbix proxy 需要设置为zabbix proxy的地址
->port zabbix server端口默认为10051
->hostname为之前关联模版的主机名一致
->
+>server 为zabbix server的地址，如通过zabbix proxy 需要设置为zabbix proxy的地址  
+>port zabbix server端口默认为10051  
+>hostname为之前关联模版的主机名一致  
+
+
 ![4](https://img.cactifans.com/wp-content/uploads/2018/08/4.jpg)
 
 ## 使用
+如不需要采集slave信息,用以下命令建立一个mysql用户不用授权任何权限即可监控
+```sql
+CREATE USER admin@'%' IDENTIFIED BY 'password';
+```
+如需要监控slave信息，需要将配置文件里的slave设置为true，并建立一个有SUPER或REPLICATION CLIENT权限的用户
 修改好配置文件之后，可以启动插件,使用以下命令进行测试数据库是否能够连通
 ```
 cd /opt/mymon
@@ -160,8 +165,7 @@ Flags:
 Use "mymon [command] --help" for more information about a command.
 ```
 ## 注意事项
-1.目前使用root权限较大，后期可能根据需求，通过配置文件配置是否需要监控主从状态，如不监控可采用数据库较低权限
-2.trapper方式默认允许任何主机发送数据到zabbix server，建议通过设置宏的方式，在模版里配置allowed hosts配置权限
-3.mysql是否运行状态未监控，建议添加mysql进程监控来实现
+1.trapper方式默认允许任何主机发送数据到zabbix server，建议通过设置宏的方式，在模版里配置allowed hosts配置权限
+2.mysql是否运行状态未监控，建议添加mysql进程监控来实现
 
 

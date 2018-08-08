@@ -1,6 +1,7 @@
 {
 "debug": false,
-"step": 60, 
+"interval": 60, 
+"slave": false,
 "mysql": {
         "username": "admin",
         "password": "hcxhF+KoURUsge+kMQQaU2lDN1YfOLiJ",

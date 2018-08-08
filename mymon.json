@@ -1,0 +1,15 @@
+{
+"debug": false,
+"step": 60, 
+"mysql": {
+        "username": "admin",
+        "password": "hcxhF+KoURUsge+kMQQaU2lDN1YfOLiJ",
+        "host": "172.16.66.17",
+        "port": 3306
+    },
+"zabbix":{
+	"server": "zabbix.cactifans.com",
+	"port": 10051,
+	"hostname": "hosts135"
+    }
+}

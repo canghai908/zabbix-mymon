@@ -1,0 +1,4 @@
+main
+zabbix-mymon
+*.log
+*.pid

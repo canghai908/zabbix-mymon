@@ -78,15 +78,15 @@ sXcEQ2FTGk4WsWSxyT6fuBnjZ3v43pc0
 }
 ```
 配置文件说明
-interval 采集周期，单位为秒
-slave 是否开启slave采集,如需要采集，mysql用户需要有SUPER或REPLICATION CLIENT权限
-需要监控的mysql数据库信息配置
+interval 采集周期，单位为秒          
+slave 是否开启slave采集,如需要采集，mysql用户需要有SUPER或REPLICATION CLIENT权限      
+需要监控的mysql数据库信息配置    
 >username 数据库的用户名，一般使用root用户  
 >passoword 加密后的密码密文  
 >host    数据库主机ip  
 >port   mysql端口  
 
-zabbix信息配置
+zabbix信息配置        
 >server 为zabbix server的地址，如通过zabbix proxy 需要设置为zabbix proxy的地址  
 >port zabbix server端口默认为10051  
 >hostname为之前关联模版的主机名一致  

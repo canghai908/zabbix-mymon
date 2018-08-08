@@ -32,8 +32,8 @@ const (
 // VersionCmd represents the ping command
 var VersionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "Connected line checker",
-	Long: `Connected line checker. For example:
+	Short: "Version",
+	Long: `Version. For example:
 
 mymon version`,
 	Run: func(cmd *cobra.Command, args []string) {

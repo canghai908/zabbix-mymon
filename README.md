@@ -1,5 +1,5 @@
 # zabbix-mymon
--------------------------
+
 ## 介绍
 最近学习使用go语言写了一个zabbix监控mysql数据库的小工具，有如下特点:     
 1.使用Zabbix Agent Trapper方式(主动发送采集数据到zabbix server，类似active模式)监控mysql数据库       

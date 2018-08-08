@@ -8,9 +8,8 @@
 4.支持mysql主从监控(默认关闭，可通过配置文件开启，mysql用户需要有SUPER或REPLICATION CLIENT权限)     
 5.支持自定义采集周期     
 
-模版下载:[https://dl.cactifans.com/zabbix/zabbix_template_mysql.tar.gz](https://dl.cactifans.com/zabbix/zabbix_template_mysql.tar.gz)
-
-二进制下载:[https://dl.cactifans.com/zabbix/zabbix-mymon-0.0.1.x86_64.tar.gz](https://dl.cactifans.com/zabbix/zabbix-mymon-0.0.1.x86_64.tar.gz)
+模版下载:[https://dl.cactifans.com/zabbix/zabbix_template_mysql.tar.gz](https://dl.cactifans.com/zabbix/zabbix_template_mysql.tar.gz)     
+工具下载:[https://dl.cactifans.com/zabbix/zabbix-mymon-0.0.1.x86_64.tar.gz](https://dl.cactifans.com/zabbix/zabbix-mymon-0.0.1.x86_64.tar.gz)       
 
 ## 源码编译
 如果不喜欢使用二进制包或者需要修改某些源码的，可以使用源码编译，具体步骤如下。部署好golang开发环境，具体部署手册请查看 https://golang.org/doc/install
@@ -39,15 +38,15 @@ mkdir -p  /opt/mymon
 wget https://dl.cactifans.com/zabbix/zabbix-mymon-0.0.1.x86_64.tar.gz
 tar zxvf zabbix-mymon-0.0.1.x86_64.tar.gz -C /opt/mymon
 ```
-插件结构
-├── control    //启动脚本
-├── mymon    //二进制程序
-└── mymon.json   //配置文件
+插件结构    
+├── control    //启动脚本     
+├── mymon    //二进制程序     
+└── mymon.json   //配置文件    
 使用mysql的root用户进行监控（主从监控需要）。把密码写在明文的文件里不是被推荐的，因此脚本提供了一个使用AES加密算法加密数据库密码的工具，保证root密码的安全。使用一下命令加密密码明文，将yourpassword替换为你的root密码
 ```bash
 /opt/mymon/mymon enc yourpassword
 ```
-执行之后会看到进过加密后的密码密文。记录下来
+执行之后会看到进过加密后的密码密文,记录下来
 ```bash
 /opt/mymon/mymon enc admin
 sXcEQ2FTGk4WsWSxyT6fuBnjZ3v43pc0
@@ -73,17 +72,17 @@ sXcEQ2FTGk4WsWSxyT6fuBnjZ3v43pc0
 ```
 配置文件说明     
 interval 采集周期，单位为秒          
-slave 是否开启slave采集,如需要采集，mysql用户需要有SUPER或REPLICATION CLIENT权限      
+slave 是否开启slave采集,如需要采集,mysql用户需要有SUPER或REPLICATION CLIENT权限      
 需要监控的mysql数据库信息配置    
->username 数据库的用户名，一般使用root用户  
->passoword 加密后的密码密文  
->host    数据库主机ip  
->port   mysql端口  
+>username 数据库的用户名，一般使用root用户      
+>passoword 加密后的密码密文      
+>host    数据库主机ip       
+>port   mysql端口       
 
 zabbix信息配置        
->server 为zabbix server的地址，如通过zabbix proxy 需要设置为zabbix proxy的地址
->port zabbix server端口默认为10051     
->hostname为之前关联模版的主机名一致    
+>server 为zabbix server的地址,如通过zabbix proxy 需要设置为zabbix proxy的地址     
+>port zabbix server端口默认为10051         
+>hostname为之前关联模版的主机名一致        
 
 
 ![4](https://img.cactifans.com/wp-content/uploads/2018/08/4.jpg)
@@ -93,13 +92,14 @@ zabbix信息配置
 ```sql
 CREATE USER admin@'%' IDENTIFIED BY 'password';
 ```
-如需要监控slave信息，需要将配置文件里的slave设置为true，并建立一个有SUPER或REPLICATION CLIENT权限的用户
-修改好配置文件之后，可以启动插件,使用以下命令进行测试数据库是否能够连通
+如需要监控slave信息，需要将配置文件里的slave设置为true，并建立一个有SUPER或REPLICATION CLIENT权限的用户,修改好配置文件之后可以启动插件,使用以下命令进行测试数据库是否能够连通
 ```
 cd /opt/mymon
 ./mymon ping
 ```
-可以看到使用的配置文件，如返回1，表示数据库连接正常，如返回2表示连接数据库异常，请检查用户权限及配置文件
+可以看到使用的配置文件     
+如返回1，表示数据库连接正常     
+如返回2表示连接数据库异常，请检查用户权限及配置文件     
 ```bash
 2018/08/08 15:29:58 ping.go:41: Using config file: /opt/mymon/mymon.json  successfully!
 1
@@ -127,11 +127,11 @@ cd /opt/mymon
 ![9](https://img.cactifans.com/wp-content/uploads/2018/08/9.jpg)
 
 指标解释
->name 为指标名称
->type不修改，为Zabbix trapper
->key 为myql.加上SHOW /*!50001 GLOBAL */ STATUS和SHOW /*!50001 GLOBAL */ 命令里的指标名称
->type of Information为指标类型，根据具体指标类型选择
->preprocessing 指标是计数器还是具体数值具体设置即可
+>name 为指标名称     
+>type不修改，为Zabbix trapper     
+>key 为myql.加上SHOW /*!50001 GLOBAL */ STATUS和SHOW /*!50001 GLOBAL */ 命令里的指标名称     
+>type of Information为指标类型，根据具体指标类型选择     
+>preprocessing 指标是计数器还是具体数值具体设置即可     
 
 ### 命令行工具
 工具内置几个命令行工具及基本使用,可以使用mymon -h 查看帮助

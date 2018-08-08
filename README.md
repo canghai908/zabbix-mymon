@@ -2,15 +2,34 @@
 -------------------------
 ## 介绍
 最近学习使用go语言写了一个zabbix监控mysql数据库的小工具，有如下特点:
+
 1.使用Zabbix Agent Trapper方式(主动发送采集数据到zabbix server，类似active模式)监控mysql数据库
+
 2.支持对密码加密，避免配置文件里出现明文密码
+
 3.支持SHOW /*!50001 GLOBAL */ STATUS和SHOW /*!50001 GLOBAL */ VARIABLES所有指标监控！！！
+
 4.支持mysql主从监控
+
 5.支持自定义采集周期
 
 
 模版下载:[https://dl.cactifans.com/zabbix/zabbix_template_mysql.tar.gz](https://dl.cactifans.com/zabbix/zabbix_template_mysql.tar.gz)
+
 二进制下载:[https://dl.cactifans.com/zabbix/zabbix-mymon-0.0.1.x86_64.tar.gz](https://dl.cactifans.com/zabbix/zabbix-mymon-0.0.1.x86_64.tar.gz)
+
+## 源码编译
+如果不喜欢使用二进制包或者需要修改某些源码的，可以使用源码编译，具体步骤如下。
+部署好golang开发环境，具体部署手册请查看 https://golang.org/doc/install
+执行以下命令
+```
+mkdir -p $GOPATH/src/github.com/canghai908
+cd $GOPATH/src/github.com/canghai90
+git clone https://github.com/canghai908/zabbix-mymon.git
+cd zabbix-mymon &./control pack
+```
+即可编译生成mymon-0.0.1.tar.gz
+
 
 ## 导入模版
 在zabbix Server上导入导入模版，解压之前下载的模版。
@@ -43,7 +62,7 @@ tar zxvf zabbix-mymon-0.0.1.x86_64.tar.gz -C /opt/mymon
 sXcEQ2FTGk4WsWSxyT6fuBnjZ3v43pc0
 ```
 修改配置文件mymon.json
-```json
+```
 {
 "debug": false,
 "step": 60, 
@@ -144,3 +163,5 @@ Use "mymon [command] --help" for more information about a command.
 1.目前使用root权限较大，后期可能根据需求，通过配置文件配置是否需要监控主从状态，如不监控可采用数据库较低权限
 2.trapper方式默认允许任何主机发送数据到zabbix server，建议通过设置宏的方式，在模版里配置allowed hosts配置权限
 3.mysql是否运行状态未监控，建议添加mysql进程监控来实现
+
+
